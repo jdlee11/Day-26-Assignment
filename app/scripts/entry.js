@@ -2,13 +2,13 @@ import $ from "jquery";
 import Backbone from "backbone";
 import router from "./router";
 import settings from "./settings";
-import user from "./models/username";
+import session from "./models/username";
 
 $(document).ajaxSend(function(evt, xhrAjax, jqueryAjax) {
-  if (user.authtoken) {
-    xhrAjax.setRequestHeader('Authorization', 'Kinvey ' + user.authtoken);
+  if (session.get("authtoken")) {
+    xhrAjax.setRequestHeader('Authorization', 'Kinvey ' + session.get("authtoken"));
   } else {
-    xhrAjax.setRequestHeader('Authorization', 'Basic ' + user.basicAuth);
+    xhrAjax.setRequestHeader('Authorization', 'Basic ' + settings.basicAuth);
 
   }
   console.log('ajax send function ', arguments);
@@ -16,6 +16,6 @@ $(document).ajaxSend(function(evt, xhrAjax, jqueryAjax) {
 
 Backbone.history.start();
 
-if (!user.username) {
+if (!session.get("username")) {
   router.navigate('login', {trigger: true});
 }

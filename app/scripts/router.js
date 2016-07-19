@@ -1,7 +1,10 @@
 import $ from "jquery";
 import Backbone from "backbone";
-import $login from "./views/loginView";
-
+import renderLogin from "./views/loginView";
+import renderContacts from "./views/contactsView";
+import contactCollection from "./collections/contacts";
+import session from "./models/username";
+import renderSignup from "./views/signupView";
 
 const Router = Backbone.Router.extend({
   routes: {
@@ -10,13 +13,20 @@ const Router = Backbone.Router.extend({
     contacts: "contactFunction"
   },
   loginFunction: function(){
-    $(".container").empty().append($login);
+    $(".container").empty().append(renderLogin);
   },
   signupFunction: function(){
-    console.log("sign up, please");
+    $(".container").empty().append(renderSignup);
   },
   contactFunction: function(){
-    console.log("here are your contacts");
+    contactCollection.fetch({
+      headers: {
+        Authorization: `Kinvey ${session.authtoken}`
+      },
+      success: function(response){
+        $(".container").empty().append(renderContacts(response));
+      }
+    });
   }
 });
 
